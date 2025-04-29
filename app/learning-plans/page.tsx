@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import DashboardHeader from "@/components/dashboard-header"
 import DashboardSkeleton from "@/components/dashboard-skeleton"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { redirect } from "next/navigation"
 import { useEffect } from "react"
 
@@ -105,6 +105,8 @@ export default function LearningPlansPage() {
             <Link
               href="/"
               className="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-4 py-2 rounded-md"
+              as="button"
+              onClick={() => signOut({ callbackUrl: '/' })}
             >
               <svg
                 className="w-5 h-5"

@@ -14,6 +14,7 @@ import DashboardHeader from "@/components/dashboard-header"
 import SkillRadarChart from "@/components/skill-radar-chart"
 import LearningPlan from "@/components/learning-plan"
 import SkillGapReport from "@/components/skill-gap-report"
+import { signOut } from "next-auth/react"
 
 const roles = ["Software Engineer", "Data Scientist", "Product Manager", "UX Designer", "DevOps Engineer"]
 
@@ -139,6 +140,8 @@ export default function DashboardContent() {
             <Link
               href="/"
               className="flex items-center space-x-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 px-4 py-2 rounded-md"
+              as="button"
+              onClick={() => signOut({ callbackUrl: '/' })}
             >
               <svg
                 className="w-5 h-5"

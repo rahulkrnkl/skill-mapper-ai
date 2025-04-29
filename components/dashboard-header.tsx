@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Menu } from "lucide-react"
 import { useState } from "react"
+import { signOut } from "next-auth/react"
 
 export default function DashboardHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -53,9 +54,7 @@ export default function DashboardHeader() {
                 <DropdownMenuItem>Billing</DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <Link href="/">
-                <DropdownMenuItem>Log out</DropdownMenuItem>
-              </Link>
+              <DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>Log out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
