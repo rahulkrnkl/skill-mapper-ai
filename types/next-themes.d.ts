@@ -12,7 +12,7 @@ declare module "next-themes" {
     storageKey?: string;
   }
 
-  export const ThemeProvider: React.ComponentType<ThemeProviderProps>;
+  export const ThemeProvider: React.FC<ThemeProviderProps>;
   export const useTheme: () => {
     theme: string | undefined;
     setTheme: (theme: string) => void;
