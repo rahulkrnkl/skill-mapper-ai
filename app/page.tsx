@@ -171,6 +171,13 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
+            <div className="text-center mt-12">
+              <a href="https://buymeacoffee.com/rahulkarankal" target="_blank" rel="noopener noreferrer">
+                <Button className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-6 h-auto text-lg">
+                  ☕ Buy Me a Coffee
+                </Button>
+              </a>
+            </div>
           </div>
         </section>
 
