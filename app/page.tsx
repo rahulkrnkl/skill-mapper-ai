@@ -12,7 +12,9 @@ import { useEffect } from "react"
 
 export default function HomePage() {
   const { toast } = useToast()
-  const { status } = useSession()
+  const { status } = useSession({
+    required: false,
+  })
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -34,6 +36,10 @@ export default function HomePage() {
 
   if (status === "loading") {
     return <div>Loading...</div>
+  }
+
+  if (status === "authenticated") {
+    redirect("/dashboard")
   }
 
   return (

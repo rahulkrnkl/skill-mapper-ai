@@ -9,13 +9,12 @@ import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession()
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
       redirect("/")
-    }
-  }, [status])
+    },
+  })
 
   if (status === "loading") {
     return <div>Loading...</div>
