@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { HuggingFaceModel } from '@/types/huggingface'
 
 interface LearningPlanItem {
   skill: string
@@ -54,8 +53,6 @@ export async function POST(req: Request) {
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
-
-    const { currentSkills, targetRole } = await req.json()
 
     // Mock response for development
     const mockLearningPlan: LearningPlanItem[] = [
