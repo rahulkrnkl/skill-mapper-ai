@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "env": {
+    "NEXTAUTH_URL": "https://v0-skill-mapper-app-design.vercel.app/",
+    "NEXTAUTH_SECRET": "@nextauth_secret"
+  }
+} 

@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss"
-
-const config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -10,7 +9,6 @@ const config = {
     "./styles/**/*.{ts,tsx,css}",
     "./*.{js,ts,jsx,tsx,mdx}",
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -21,15 +19,15 @@ const config = {
     },
     extend: {
       colors: {
+        primary: {
+          DEFAULT: "#3B82F6",
+          foreground: "#ffffff",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -76,11 +74,12 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    function ({ addVariant }) {
+      addVariant('child', '& > *');
+      addVariant('child-hover', '& > *:hover');
+    }
+  ],
   important: true,
-  future: {
-    hoverOnlyWhenSupported: true,
-  },
-} satisfies Config
-
-export default config
+} 
