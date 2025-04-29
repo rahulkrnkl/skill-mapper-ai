@@ -36,6 +36,15 @@ const mockResources = {
   ],
 }
 
+interface HuggingFaceResponse {
+  generated_text: string;
+  details?: {
+    finish_reason: string;
+    generated_tokens: number;
+    seed: number;
+  };
+}
+
 async function analyzeSkills(currentRole: string, targetRole: string, knownSkills: string[]) {
   const prompt = `Analyze the skill gap between a ${currentRole} and a ${targetRole}. 
   Current skills: ${knownSkills.join(', ')}.

@@ -1,40 +1,37 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { SessionProvider, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 
-export const AuthContext = createContext<{
-  user: any
-  loading: boolean
-}>({
+interface AuthContextType {
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  user: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  } | null;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  isAuthenticated: false,
+  isLoading: true,
   user: null,
-  loading: true,
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <SessionProvider>
-      <AuthContextProvider>{children}</AuthContextProvider>
-    </SessionProvider>
-  )
-}
-
-function AuthContextProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [user, setUser] = useState<AuthContextType["user"]>(null)
 
   useEffect(() => {
-    if (status === 'loading') {
-      setLoading(true)
-    } else {
-      setUser(session?.user || null)
-      setLoading(false)
-    }
+    setIsAuthenticated(status === "authenticated")
+    setUser(session?.user || null)
   }, [session, status])
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading: status === "loading", user }}>
       {children}
     </AuthContext.Provider>
   )

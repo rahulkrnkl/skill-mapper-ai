@@ -11,6 +11,24 @@ const requestSchema = z.object({
   temperature: z.number().min(0).max(1).optional(),
 })
 
+interface ModelResponse {
+  generated_text: string;
+  details?: {
+    finish_reason: string;
+    generated_tokens: number;
+    seed: number;
+  };
+}
+
+interface ParsedLearningPlan {
+  missingSkills: string[];
+  plan: {
+    day: number;
+    tasks: string[];
+    resources: string[];
+  }[];
+}
+
 // Fetch available models from Hugging Face API
 async function getAvailableModels() {
   try {
@@ -95,20 +113,17 @@ Make the plan realistic and achievable. Include specific learning objectives and
     )
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(
-        `Hugging Face API error: ${response.statusText}. Details: ${JSON.stringify(errorData)}`
-      )
+      throw new Error(`Hugging Face API error: ${response.statusText}`)
     }
 
-    const result = await response.json()
+    const data: ModelResponse = await response.json()
     
     // Extract the generated text and parse it as JSON
-    const generatedText = Array.isArray(result) ? result[0].generated_text : result.generated_text
+    const generatedText = Array.isArray(data) ? data[0].generated_text : data.generated_text
     
     try {
-      const parsedResult = JSON.parse(generatedText)
-      return parsedResult
+      const parsedData: ParsedLearningPlan = JSON.parse(generatedText)
+      return parsedData
     } catch (parseError) {
       // If JSON parsing fails, try to extract JSON from the text
       const jsonMatch = generatedText.match(/\{[\s\S]*\}/)
