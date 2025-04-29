@@ -11,6 +11,11 @@ const requestSchema = z.object({
   temperature: z.number().min(0).max(1).optional(),
 })
 
+interface Model {
+  id: string;
+  tags?: string[];
+}
+
 interface ModelResponse {
   generated_text: string;
   details?: {
@@ -47,11 +52,11 @@ async function getAvailableModels() {
 
     const models = await response.json()
     return models
-      .filter((model: any) => 
+      .filter((model: Model) => 
         model.tags?.includes('text-generation') && 
         model.tags?.includes('instruct')
       )
-      .map((model: any) => model.id)
+      .map((model: Model) => model.id)
   } catch (error) {
     console.error('Error fetching models:', error)
     // Fallback to default models if API fails

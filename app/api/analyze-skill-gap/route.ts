@@ -45,6 +45,17 @@ interface HuggingFaceResponse {
   };
 }
 
+interface LearningPlanItem {
+  skill: string;
+  description: string;
+  dailyTasks: string[];
+}
+
+interface AnalysisResult {
+  missingSkills: string[];
+  learningPlan: LearningPlanItem[];
+}
+
 async function analyzeSkills(currentRole: string, targetRole: string, knownSkills: string[]) {
   const prompt = `Analyze the skill gap between a ${currentRole} and a ${targetRole}. 
   Current skills: ${knownSkills.join(', ')}.
@@ -99,7 +110,7 @@ export async function POST(request: Request) {
     )
 
     // Add resources to the learning plan
-    const learningPlan = analysis.learningPlan.map((plan: any) => ({
+    const learningPlan = analysis.learningPlan.map((plan: LearningPlanItem) => ({
       ...plan,
       resources: mockResources,
     }))

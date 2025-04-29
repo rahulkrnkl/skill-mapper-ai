@@ -3,15 +3,17 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 
+interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user: {
-    id: string;
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-  } | null;
+  user: User | null;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -23,7 +25,7 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [user, setUser] = useState<AuthContextType["user"]>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     setIsAuthenticated(status === "authenticated")
