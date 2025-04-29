@@ -30,6 +30,10 @@ interface MockResources {
   youtube: string[];
 }
 
+interface LearningPlanWithResources extends LearningPlanItem {
+  resources: MockResources;
+}
+
 // Mock resources for demonstration
 const mockResources: MockResources = {
   udemy: [
@@ -117,7 +121,7 @@ export async function POST(request: Request) {
     )
 
     // Add resources to the learning plan
-    const learningPlan = analysis.learningPlan.map((plan: LearningPlanItem) => ({
+    const learningPlan: LearningPlanWithResources[] = analysis.learningPlan.map((plan: LearningPlanItem) => ({
       ...plan,
       resources: mockResources,
     }))

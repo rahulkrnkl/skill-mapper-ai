@@ -29,7 +29,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsAuthenticated(status === "authenticated")
-    setUser(session?.user as User | null)
+    if (session?.user) {
+      const typedUser: User = {
+        id: session.user.id || "",
+        name: session.user.name || null,
+        email: session.user.email || null,
+        image: session.user.image || null,
+      }
+      setUser(typedUser)
+    } else {
+      setUser(null)
+    }
   }, [session, status])
 
   return (

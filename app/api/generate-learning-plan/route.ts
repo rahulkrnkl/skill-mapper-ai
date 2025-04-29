@@ -34,6 +34,11 @@ interface ParsedLearningPlan {
   }[];
 }
 
+interface HuggingFaceModel {
+  id: string;
+  tags: string[];
+}
+
 // Fetch available models from Hugging Face API
 async function getAvailableModels() {
   try {
@@ -50,13 +55,13 @@ async function getAvailableModels() {
       throw new Error('Failed to fetch available models')
     }
 
-    const models = await response.json()
+    const models: HuggingFaceModel[] = await response.json()
     return models
-      .filter((model: Model) => 
+      .filter((model: HuggingFaceModel) => 
         model.tags?.includes('text-generation') && 
         model.tags?.includes('instruct')
       )
-      .map((model: Model) => model.id)
+      .map((model: HuggingFaceModel) => model.id)
   } catch (error) {
     console.error('Error fetching models:', error)
     // Fallback to default models if API fails
