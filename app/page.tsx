@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import Link from "next/link"
 import Image from "next/image"
@@ -6,9 +6,19 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import { useToast } from '@/components/ui/use-toast'
 import { signIn } from 'next-auth/react'
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
+import { useEffect } from "react"
 
-export default function Home() {
+export default function HomePage() {
   const { toast } = useToast()
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      redirect("/dashboard")
+    }
+  }, [status])
 
   const handleGoogleSignIn = async () => {
     try {
@@ -20,6 +30,10 @@ export default function Home() {
         variant: "destructive",
       })
     }
+  }
+
+  if (status === "loading") {
+    return <div>Loading...</div>
   }
 
   return (

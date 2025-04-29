@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Suspense } from "react"
 import { ChevronLeft } from "lucide-react"
@@ -6,8 +8,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import DashboardHeader from "@/components/dashboard-header"
 import DashboardSkeleton from "@/components/dashboard-skeleton"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
+import { useEffect } from "react"
 
 export default function LearningPlansPage() {
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      redirect("/")
+    }
+  }, [status])
+
+  if (status === "loading") {
+    return <div>Loading...</div>
+  }
+
+  if (!session) {
+    return null
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <DashboardHeader />
