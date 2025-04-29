@@ -56,8 +56,9 @@ export default function HomePage() {
           <a href="#how-it-works" className="text-gray-600 hover:text-gray-900">
             How it Works
           </a>
-          <a href="#pricing" className="text-gray-600 hover:text-gray-900">
-            Pricing
+          <a href="https://buymeacoffee.com/rahulkarankal" target="_blank" rel="noopener noreferrer" className="flex items-center text-yellow-600 hover:text-yellow-800">
+            <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.104.896 2 2 2h8c1.104 0 2-.896 2-2v-1H6v1zm13-3V7c0-1.104-.896-2-2-2H7C5.896 5 5 5.896 5 7v9c0 1.104.896 2 2 2h10c1.104 0 2-.896 2-2zm-2 0H7V7h10v9z"/></svg>
+            Support Us
           </a>
         </nav>
       </header>
@@ -177,54 +178,6 @@ export default function HomePage() {
                   ☕ Buy Me a Coffee
                 </Button>
               </a>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-gray-50 py-16" id="pricing">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Simple Pricing</h2>
-            <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="p-8">
-                <div className="uppercase tracking-wide text-sm text-teal-500 font-semibold">Premium Plan</div>
-                <div className="mt-2">
-                  <span className="text-4xl font-bold">$9.99</span>
-                  <span className="text-gray-500">/month</span>
-                </div>
-                <ul className="mt-6 space-y-4">
-                  <li className="flex items-center">
-                    <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Unlimited skill gap analyses
-                  </li>
-                  <li className="flex items-center">
-                    <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Personalized learning plans
-                  </li>
-                  <li className="flex items-center">
-                    <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Progress tracking
-                  </li>
-                  <li className="flex items-center">
-                    <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Premium learning resources
-                  </li>
-                </ul>
-                <div className="mt-8">
-                  <Link href="/dashboard">
-                    <Button className="w-full bg-gradient-to-r from-teal-400 to-blue-500 hover:from-teal-500 hover:to-blue-600 text-white">
-                      Start Free Trial
-                    </Button>
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         </section>
