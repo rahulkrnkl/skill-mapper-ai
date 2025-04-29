@@ -12,8 +12,26 @@ const requestSchema = z.object({
 // Initialize Hugging Face client
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY)
 
+interface LearningPlanItem {
+  skill: string;
+  description: string;
+  dailyTasks: string[];
+}
+
+interface AnalysisResult {
+  missingSkills: string[];
+  learningPlan: LearningPlanItem[];
+}
+
+interface MockResources {
+  udemy: string[];
+  coursera: string[];
+  github: string[];
+  youtube: string[];
+}
+
 // Mock resources for demonstration
-const mockResources = {
+const mockResources: MockResources = {
   udemy: [
     'https://www.udemy.com/course/mock-course-1',
     'https://www.udemy.com/course/mock-course-2',
@@ -43,17 +61,6 @@ interface HuggingFaceResponse {
     generated_tokens: number;
     seed: number;
   };
-}
-
-interface LearningPlanItem {
-  skill: string;
-  description: string;
-  dailyTasks: string[];
-}
-
-interface AnalysisResult {
-  missingSkills: string[];
-  learningPlan: LearningPlanItem[];
 }
 
 async function analyzeSkills(currentRole: string, targetRole: string, knownSkills: string[]) {

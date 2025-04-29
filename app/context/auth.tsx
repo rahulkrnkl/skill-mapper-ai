@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { useSession, type Session } from 'next-auth/react'
 
 interface User {
   id: string;
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsAuthenticated(status === "authenticated")
-    setUser(session?.user || null)
+    setUser(session?.user as User | null)
   }, [session, status])
 
   return (
