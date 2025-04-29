@@ -25,7 +25,7 @@ export default function DashboardPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Welcome, {session?.user?.name}</h1>
-        <p className="text-gray-600">Let's map your skills and create a learning plan.</p>
+        <p className="text-gray-600">Let&apos;s map your skills and create a learning plan.</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

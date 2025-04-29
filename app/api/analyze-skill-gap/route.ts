@@ -1,147 +1,81 @@
 import { NextResponse } from 'next/server'
-import { z } from 'zod'
-import { HfInference } from '@huggingface/inference'
-
-// Input validation schema
-const requestSchema = z.object({
-  currentRole: z.string().min(1),
-  targetRole: z.string().min(1),
-  knownSkills: z.array(z.string()).min(1),
-})
-
-// Initialize Hugging Face client
-const hf = new HfInference(process.env.HUGGINGFACE_API_KEY)
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { HuggingFaceModel } from '@/types/huggingface'
 
 interface LearningPlanItem {
-  skill: string;
-  description: string;
-  dailyTasks: string[];
-}
-
-interface AnalysisResult {
-  missingSkills: string[];
-  learningPlan: LearningPlanItem[];
+  skill: string
+  level: string
+  resources: {
+    title: string
+    url: string
+    type: string
+  }[]
 }
 
 interface MockResources {
-  udemy: string[];
-  coursera: string[];
-  github: string[];
-  youtube: string[];
+  [key: string]: {
+    title: string
+    url: string
+    type: string
+  }[]
 }
 
-interface LearningPlanWithResources extends LearningPlanItem {
-  resources: MockResources;
-}
-
-// Mock resources for demonstration
 const mockResources: MockResources = {
-  udemy: [
-    'https://www.udemy.com/course/mock-course-1',
-    'https://www.udemy.com/course/mock-course-2',
-    'https://www.udemy.com/course/mock-course-3',
+  "React": [
+    {
+      title: "React Documentation",
+      url: "https://reactjs.org/docs/getting-started.html",
+      type: "Documentation"
+    },
+    {
+      title: "React Tutorial",
+      url: "https://reactjs.org/tutorial/tutorial.html",
+      type: "Tutorial"
+    }
   ],
-  coursera: [
-    'https://www.coursera.org/learn/mock-course-1',
-    'https://www.coursera.org/learn/mock-course-2',
-    'https://www.coursera.org/learn/mock-course-3',
-  ],
-  github: [
-    'https://github.com/mock/repo-1',
-    'https://github.com/mock/repo-2',
-    'https://github.com/mock/repo-3',
-  ],
-  youtube: [
-    'https://youtube.com/watch?v=mock-video-1',
-    'https://youtube.com/watch?v=mock-video-2',
-    'https://youtube.com/watch?v=mock-video-3',
-  ],
+  "TypeScript": [
+    {
+      title: "TypeScript Documentation",
+      url: "https://www.typescriptlang.org/docs/",
+      type: "Documentation"
+    },
+    {
+      title: "TypeScript Tutorial",
+      url: "https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html",
+      type: "Tutorial"
+    }
+  ]
 }
 
-interface HuggingFaceResponse {
-  generated_text: string;
-  details?: {
-    finish_reason: string;
-    generated_tokens: number;
-    seed: number;
-  };
-}
-
-async function analyzeSkills(currentRole: string, targetRole: string, knownSkills: string[]) {
-  const prompt = `Analyze the skill gap between a ${currentRole} and a ${targetRole}. 
-  Current skills: ${knownSkills.join(', ')}.
-  Generate a list of missing skills and a 30-day learning plan for each skill.
-  Format the response as JSON with this structure:
-  {
-    "missingSkills": ["skill1", "skill2"],
-    "learningPlan": [
-      {
-        "skill": "skill1",
-        "description": "brief description of the skill",
-        "dailyTasks": [
-          "Day 1: Task description",
-          "Day 2: Task description",
-          // ... up to Day 30
-        ]
-      }
-    ]
-  }`
-
+export async function POST(req: Request) {
   try {
-    const response = await hf.textGeneration({
-      model: 'mistralai/Mistral-7B-Instruct-v0.2',
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 1000,
-        temperature: 0.7,
-        top_p: 0.9,
-      },
-    })
-
-    // Parse the response
-    const result = JSON.parse(response.generated_text)
-    return result
-  } catch (error) {
-    console.error('Error in skill analysis:', error)
-    throw new Error('Failed to analyze skills')
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    // Validate request body
-    const body = await request.json()
-    const validatedData = requestSchema.parse(body)
-
-    // Analyze skills using Hugging Face
-    const analysis = await analyzeSkills(
-      validatedData.currentRole,
-      validatedData.targetRole,
-      validatedData.knownSkills
-    )
-
-    // Add resources to the learning plan
-    const learningPlan: LearningPlanWithResources[] = analysis.learningPlan.map((plan: LearningPlanItem) => ({
-      ...plan,
-      resources: mockResources,
-    }))
-
-    return NextResponse.json({
-      missingSkills: analysis.missingSkills,
-      learningPlan,
-    })
-  } catch (error) {
-    console.error('Error in analyze-skill-gap:', error)
-    
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid input data', details: error.errors },
-        { status: 400 }
-      )
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { currentSkills, targetRole } = await req.json()
+
+    // Mock response for development
+    const mockLearningPlan: LearningPlanItem[] = [
+      {
+        skill: "React",
+        level: "Intermediate",
+        resources: mockResources["React"]
+      },
+      {
+        skill: "TypeScript",
+        level: "Beginner",
+        resources: mockResources["TypeScript"]
+      }
+    ]
+
+    return NextResponse.json({ learningPlan: mockLearningPlan })
+  } catch (error) {
+    console.error("Error analyzing skill gap:", error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: "Failed to analyze skill gap" },
       { status: 500 }
     )
   }

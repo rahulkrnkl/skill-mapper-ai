@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { HuggingFaceModel } from "@/types/huggingface"
 
 // Input validation schema
 const requestSchema = z.object({
@@ -11,32 +14,14 @@ const requestSchema = z.object({
   temperature: z.number().min(0).max(1).optional(),
 })
 
-interface Model {
-  id: string;
-  tags?: string[];
-}
-
 interface ModelResponse {
-  generated_text: string;
-  details?: {
-    finish_reason: string;
-    generated_tokens: number;
-    seed: number;
-  };
+  generated_text: string
 }
 
 interface ParsedLearningPlan {
-  missingSkills: string[];
-  plan: {
-    day: number;
-    tasks: string[];
-    resources: string[];
-  }[];
-}
-
-interface HuggingFaceModel {
-  id: string;
-  tags: string[];
+  skill: string
+  description: string
+  dailyTasks: string[]
 }
 
 // Fetch available models from Hugging Face API
@@ -148,61 +133,38 @@ Make the plan realistic and achievable. Include specific learning objectives and
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    // Validate request body
-    const body = await request.json()
-    const validatedData = requestSchema.parse(body)
-
-    // Get available models
-    const availableModels = await getAvailableModels()
-    
-    // Use requested model or fallback to available ones
-    const modelsToTry = validatedData.model 
-      ? [validatedData.model, ...availableModels]
-      : availableModels
-
-    // Try each model until we get a successful response
-    let result
-    let lastError
-
-    for (const model of modelsToTry) {
-      try {
-        result = await generateLearningPlan(
-          validatedData.currentRole,
-          validatedData.targetRole,
-          validatedData.knownSkills,
-          model,
-          validatedData.maxTokens,
-          validatedData.temperature
-        )
-        break
-      } catch (error) {
-        lastError = error
-        console.warn(`Failed with model ${model}, trying next...`)
-      }
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    if (!result) {
-      throw lastError || new Error('All models failed')
+    const { skill } = await req.json()
+
+    // Mock response for development
+    const mockLearningPlan: ParsedLearningPlan = {
+      skill: "React",
+      description: "Learn React fundamentals and best practices",
+      dailyTasks: [
+        "Day 1: Introduction to React and JSX",
+        "Day 2: Components and Props",
+        "Day 3: State and Lifecycle",
+        "Day 4: Handling Events",
+        "Day 5: Conditional Rendering",
+        "Day 6: Lists and Keys",
+        "Day 7: Forms and Controlled Components",
+        "Day 8: Lifting State Up",
+        "Day 9: Composition vs Inheritance",
+        "Day 10: Thinking in React"
+      ]
     }
 
-    return NextResponse.json(result)
+    return NextResponse.json({ learningPlan: mockLearningPlan })
   } catch (error) {
-    console.error('Error in generate-learning-plan:', error)
-    
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid input data', details: error.errors },
-        { status: 400 }
-      )
-    }
-
+    console.error("Error generating learning plan:", error)
     return NextResponse.json(
-      { 
-        error: 'Failed to generate learning plan',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: "Failed to generate learning plan" },
       { status: 500 }
     )
   }

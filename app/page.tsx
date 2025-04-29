@@ -12,7 +12,7 @@ import { useEffect } from "react"
 
 export default function HomePage() {
   const { toast } = useToast()
-  const { data: session, status } = useSession()
+  const { status } = useSession()
 
   useEffect(() => {
     if (status === "authenticated") {
